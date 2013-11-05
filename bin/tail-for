@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + "/../lib/geordi/capistrano"
+include Geordi::Capistrano
+
+catching_errors do
+  self.stage = ARGV.shift
+  tail_for
+end

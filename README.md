@@ -200,6 +200,16 @@ Now it can also be called with any command to be remotely executed before loadin
 More information at http://makandracards.com/makandra/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target
 
 
+tail-for
+---------
+
+Executes a `tail -f` on the application log on all servers for the given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target:
+
+    tail-for production
+
+More information at http://makandracards.com/makandra/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target
+
+
 tests
 --------------
 

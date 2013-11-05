@@ -15,9 +15,13 @@ module Geordi
         @root = find_project_root!
         load_capistrano_config
       end
-      
+
       def user
         @capistrano_config.fetch(:user)
+      end
+
+      def servers
+        @capistrano_config.find_servers(:roles => [:app])
       end
 
       def server
@@ -35,7 +39,7 @@ module Geordi
       def shell
         @capistrano_config.fetch(:default_shell, 'bash --login')
       end
-      
+
 
       private
 
@@ -86,7 +90,7 @@ module Geordi
       end
 
       remote_command  = args.join(' ').strip
-      
+
       login = %(#{config.user}@#{config.server})
 
       commands = [ "cd #{config.path}" ]
@@ -95,7 +99,7 @@ module Geordi
       else
         commands << %{#{config.shell} -c '#{remote_command}'}
       end
-      
+
       args = ['ssh', login, '-t', commands.join(' && ')]
       if options.fetch(:exec, true)
         exec(*args)
@@ -103,6 +107,19 @@ module Geordi
         system(*args)
       end
     end
-  
+
+    def tail_for
+      login = []
+      config.servers.each do |server|
+        login << %(-H#{config.user}@#{server})
+      end
+
+      logpath = %(#{config.path}/log/#{config.env}.log)
+
+      raise 'You have to install pssh first' unless system('which pssh > /dev/null 2>&1')
+      command = %(pssh -t -1 -P #{login.join(' ')} "tail -f #{logpath}")
+      exec(command)
+    end
+
   end
 end
